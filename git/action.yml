@@ -10,10 +10,11 @@ inputs:
   repository:
     description: 'Organization and repository to be cloned'
     required: true
+    default: ${{ github.repository }}
   path:
     description: 'Target path for the cloned repository'
     required: true
-    default: ''
+    default: ${{ github.workspace }}
   ref:
     description: 'Reference to be cloned'
     required: true
