@@ -25,16 +25,21 @@ outputs:
     value: ''
 
 runs:
-  runs-on: composite
+  using:: composite
   steps:
     - id: docker-login
       name: 'Login to GitHub Container Registry (ghcr.io)'
       run: echo "${{ inputs.access-token }}" | docker login ghcr.io -u x-access-token --password-stdin
+      shell: bash
     - id: docker-pull
       name: 'Try to fetch latest image to speed up builds'
       run: docker pull "${{ inputs.image }}" || true
+      shell: bash
     - id: docker-build
       name: 'Build new image'
       run: docker build --tag "${{ inputs.image }}" --file "${{ inputs.dockerfile-path }}" "${{ inputs.path }}"
+      shell: bash
     - id: docker-push
+      name: 'Push image to ghcr.io...'
       run: docker push "${{ inputs.image }}"
+      shell: bash
