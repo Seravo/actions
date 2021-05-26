@@ -25,7 +25,7 @@ outputs:
     value: ''
 
 runs:
-  using:: composite
+  using: composite
   steps:
     - id: docker-login
       name: 'Login to GitHub Container Registry (ghcr.io)'
