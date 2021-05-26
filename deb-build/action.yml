@@ -1,0 +1,30 @@
+---
+name: 'Build .debs from source packages'
+description: 'Build packages forBuild packages for consuption by other builds..'
+
+inputs:
+  access-token:
+    description: 'GitHub Access Token for authenticating to services'
+    required: true
+    default: ${{ github.token }}
+  path:
+    description: 'Path to the package source directory'
+    required: true
+    default: ${{ github.workspace }}
+
+runs:
+  using: composite
+  steps:
+    - id: install-deps
+      shell: bash
+      name: Install build dependencies
+      run: apt-get --assume-yes install build-essential packaging-dev devscripts equivs && mk-build-deps --build-dep --install --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y"
+
+    - id: build-pkg
+      shell: bash
+      run: dch --release "TESTING" && dpkg-buildpackage -us -uc --build=source
+
+    - id: collect-artifacts
+      shell: bash
+      name: Collect artifacts
+      run: echo "Hello World! (FIXME / no-op)"
