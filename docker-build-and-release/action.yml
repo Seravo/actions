@@ -14,10 +14,6 @@ inputs:
     description: 'Build path for Docker (default: .)'
     required: true
     default: '.'
-  dockerfile-path:
-    description: 'Path to Dockerfile (default: Dockerfile)'
-    required: true
-    default: 'Dockerfile'
 
 outputs:
   image-id:
@@ -37,7 +33,7 @@ runs:
       shell: bash
     - id: docker-build
       name: 'Build new image'
-      run: docker build --tag "${{ inputs.image }}" --file "${{ inputs.dockerfile-path }}" "${{ inputs.path }}"
+      run: docker build --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
     - id: docker-push
       name: 'Push image to ghcr.io...'
