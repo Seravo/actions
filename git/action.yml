@@ -1,0 +1,33 @@
+---
+name: 'Clone repository from GitHub using access token'
+description: 'Simplified git clone action'
+
+inputs:
+  access-token:
+    description: 'GitHub Access Token for authenticating to services'
+    required: true
+    default: ${{ github.token }}
+  repository:
+    description: 'Organization and repository to be cloned'
+    required: true
+  path:
+    description: 'Target path for the cloned repository'
+    required: true
+    default: ''
+  ref:
+    description: 'Reference to be cloned'
+    required: true
+    default: 'master'
+
+runs:
+  using: composite
+  steps:
+    - id: git-config-auth
+      name: Configure git to user access token for authentication
+      run: git config --global url."https://x-access-token:${{ inputs.access-token }}@github.com/".insteadOf https://github.com/
+      shell: bash
+    - id: git-clone
+      name: Checkout repository code
+      run: git clone --depth=1 --branch "${{ inputs.ref }}" "$GITHUB_SERVER_URL/${{ inputs.repository }}" "${{ inputs.path }}"
+      shell: bash
+
