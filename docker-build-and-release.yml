@@ -1,0 +1,40 @@
+---
+name: 'Build and release Docker image'
+description: 'Build Docker image from sources, and release it into GitHub package registry (ghcr.io)'
+
+inputs:
+  access-token:
+    description: 'GitHub Access Token for authenticating to services'
+    required: true
+    default: ${{ github.token }}
+  image:
+    description: 'Name and tag for the image to be built'
+    required: true
+  path:
+    description: 'Build path for Docker (default: .)'
+    required: true
+    default: '.'
+  dockerfile-path:
+    description: 'Path to Dockerfile (default: Dockerfile)'
+    required: true
+    default: 'Dockerfile'
+
+outputs:
+  image-id:
+    description: 'Docker Image ID for the image'
+    value: ''
+
+runs:
+  runs-on: composite
+  steps:
+    - id: docker-login
+      name: 'Login to GitHub Container Registry (ghcr.io)'
+      run: echo "${{ inputs.access-token }}" | docker login ghcr.io -u x-access-token --password-stdin
+    - id: docker-pull
+      name: 'Try to fetch latest image to speed up builds'
+      run: docker pull "${{ inputs.image }}" || true
+    - id: docker-build
+      name: 'Build new image'
+      run: docker build --tag "${{ inputs.image }}" --file "${{ inputs.dockerfile-path }}" "${{ inputs.path }}"
+    - id: docker-push
+      run: docker push "${{ inputs.image }}"
