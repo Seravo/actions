@@ -33,7 +33,7 @@ runs:
       shell: bash
     - id: docker-build
       name: 'Build new image'
-      run: docker build --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      run: docker build --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
     - id: docker-push
       name: 'Push image to ghcr.io...'
