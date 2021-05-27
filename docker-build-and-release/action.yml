@@ -41,6 +41,7 @@ runs:
     - id: docker-tag-job
       name: 'Tag image by job id'
       run: docker tag "${{ inputs.image }}" "${{ inputs.image }}-${{ github.run_id }}"
+      shell: bash
     
     - id: docker-push
       name: 'Push image to ghcr.io...'
