@@ -18,13 +18,23 @@ runs:
     - id: install-deps
       shell: bash
       name: Install build dependencies
+      working-directory: ${{ inputs.path }}
       run: apt-get --assume-yes install build-essential packaging-dev devscripts equivs && mk-build-deps --build-dep --install --tool "apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends -y"
 
+    - id: set-version
+      shell: bash
+      name: Update changelog
+      working-directory: ${{ inputs.path }}
+      run: dch --release "TESTING"
+    
     - id: build-pkg
       shell: bash
-      run: dch --release "TESTING" && dpkg-buildpackage -us -uc --build=source
+      name: Build the package
+      working-directory: ${{ inputs.path }}
+      run: dpkg-buildpackage -us -uc --build=source
 
     - id: collect-artifacts
       shell: bash
       name: Collect artifacts
+      working-directory: ${{ inputs.path }}
       run: echo "Hello World! (FIXME / no-op)"
