@@ -7,20 +7,13 @@ inputs:
     description: 'GitHub Access Token for authenticating to services'
     required: true
     default: ${{ github.token }}
-
   image:
     description: 'Name and tag for the image to be built'
     required: true
-
   path:
     description: 'Build path for Docker (default: .)'
     required: true
     default: '.'
-
-  force:
-    description: 'Force rebuild (do not use cache)'
-    required: true
-    default: 0
 
 outputs:
   image-id:
@@ -39,7 +32,6 @@ runs:
       name: 'Try to fetch latest image to speed up builds'
       run: docker pull "${{ inputs.image }}" || true
       shell: bash
-      if: ${{ inputs.force == '0' }}
     
     - id: docker-build
       name: 'Build new image'
