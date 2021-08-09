@@ -35,7 +35,7 @@ runs:
     
     - id: docker-build
       name: 'Build new image'
-      run: docker build --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      run: docker build --build-arg BUILD_ID="$GITHUB_RUN_NUMBER" --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
 
     - id: docker-tag-job
