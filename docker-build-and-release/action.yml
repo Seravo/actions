@@ -15,7 +15,6 @@ inputs:
     required: true
     default: '.'
 
-
 outputs:
   image-id:
     description: 'Docker Image ID for the image'
@@ -33,12 +32,6 @@ runs:
       name: 'Try to fetch latest image to speed up builds'
       run: docker pull "${{ inputs.image }}" || true
       shell: bash
-
-    - id: docker-build-force-if-master
-      if: ${{ github.ref == 'refs/heads/main' }}
-      name: 'Build new image with --force when running from master'
-      run: docker build --force --tag "${{ inputs.image }}" "${{ inputs.path }}"
-      shell: bash
     
     - id: docker-build
       name: 'Build new image'
@@ -51,7 +44,6 @@ runs:
       shell: bash
     
     - id: docker-push
-      if: ${{ github.ref == 'refs/heads/main' }}
       name: 'Push image to ghcr.io...'
       run: docker push "${{ inputs.image }}"
       shell: bash
