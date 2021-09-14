@@ -14,6 +14,10 @@ inputs:
     description: 'Build path for Docker (default: .)'
     required: true
     default: '.'
+  args:
+    description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
+    required: true
+    default: ''
 
 outputs:
   image-id:
@@ -39,6 +43,7 @@ runs:
       with:
         image: ${{ inputs.image }}
         path: ${{ inputs.path }}
+        args: ${{ inputs.args }} 
 
     - id: docker-tag-job
       name: 'Tag image by job id'
