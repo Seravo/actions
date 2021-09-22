@@ -1,0 +1,17 @@
+---
+name: 'Login Docker to ghcr.io'
+description: 'Login Docker to GitHub Container Registry (ghcr.io) for further pull/push operations'
+
+inputs:
+  access-token:
+    description: 'GitHub Access Token for authenticating to services'
+    required: true
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - id: docker-login
+      name: 'Login to GitHub Container Registry (ghcr.io)'
+      run: echo "${{ inputs.access-token }}" | docker login ghcr.io -u x-access-token --password-stdin
+      shell: bash

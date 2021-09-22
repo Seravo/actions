@@ -1,0 +1,25 @@
+---
+name: 'Build Docker image'
+description: 'Build Docker image from sources'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be built'
+    required: true
+  path:
+    description: 'Build path for Docker (default: .)'
+    required: true
+    default: '.'
+
+outputs:
+  image-id:
+    description: 'Docker Image ID for the image'
+    value: ''
+
+runs:
+  using: composite
+  steps:
+    - id: docker-build
+      name: 'Build new image'
+      run: docker build --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      shell: bash

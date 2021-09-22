@@ -28,31 +28,37 @@ runs:
   using: composite
   steps:
     - id: docker-login
-      name: 'Login to GitHub Container Registry (ghcr.io)'
-      run: echo "${{ inputs.access-token }}" | docker login ghcr.io -u x-access-token --password-stdin
-      shell: bash
+      uses: seravo/actions/docker-login@split
+      with:
+        access-token: "${{ inputs.access-token }}"
     
     - id: docker-pull
       name: 'Try to fetch latest image to speed up builds'
-      run: docker pull "${{ inputs.image }}" || true
-      shell: bash
+      uses: seravo/actions/docker-pull@split
+      with:
+        image: "${{ inputs.image }}"
     
     - id: docker-build
-      name: 'Build new image'
-      run: docker build --build-arg BUILD_ID="$GITHUB_RUN_NUMBER" ${{ inputs.args }} --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
-      shell: bash
+      uses: seravo/actions/docker-build@split
+      with:
+        image: ${{ inputs.image }}
+        path: ${{ inputs.path }}
 
     - id: docker-tag-job
       name: 'Tag image by job id'
-      run: docker tag "${{ inputs.image }}" "${{ inputs.image }}-${{ github.run_id }}"
-      shell: bash
+      uses: seravo/actions/docker-tag@split
+      with:
+        source: "${{ inputs.image }}"
+        target: "${{ inputs.image }}-${{ github.run_id }}"
     
     - id: docker-push
       name: 'Push image to ghcr.io...'
-      run: docker push "${{ inputs.image }}"
-      shell: bash
+      uses: seravo/actions/docker-push@split
+      with:
+        image: ${{ inputs.image }}
     
     - id: docker-push-job
-      name: 'Push image to ghcr.io... (with run id)'
-      run: docker push "${{ inputs.image }}-${{ github.run_id }}"
-      shell: bash
+      name: 'Push image to ghcr.io...'
+      uses: seravo/actions/docker-push@split
+      with:
+        image: "${{ inputs.image }}-${{ github_run_id }}"
