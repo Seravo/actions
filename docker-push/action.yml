@@ -1,0 +1,16 @@
+---
+name: 'Push Docker image'
+description: 'Push Docker image to remote repository'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be pushed'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: docker-push
+      name: 'Push image to repository'
+      run: docker push "${{ inputs.image }}"
+      shell: bash

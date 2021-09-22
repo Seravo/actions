@@ -1,0 +1,19 @@
+---
+name: 'Tag Docker image'
+description: 'Tag Docker image'
+
+inputs:
+  source:
+    description: 'Source image/tag'
+    required: true
+  target:
+    description: 'Target image/tag'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: docker-tag
+      name: 'Tag Docker image with new name'
+      run: docker tag "${{ inputs.source }}" "${{ inputs.target }}"
+      shell: bash

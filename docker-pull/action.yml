@@ -1,0 +1,16 @@
+---
+name: 'Pull Docker image'
+description: 'Pull Docker image from remote repository'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be pushed'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: docker-pll
+      name: 'Pull image from repository'
+      run: docker pull "${{ inputs.image }}"
+      shell: bash
