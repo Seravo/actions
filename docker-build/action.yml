@@ -10,6 +10,10 @@ inputs:
     description: 'Build path for Docker (default: .)'
     required: true
     default: '.'
+  dockerfile:
+    description: 'Name of Dockerfile'
+    required: true
+    default: 'Dockerfile'
 
 outputs:
   image-id:
@@ -21,5 +25,5 @@ runs:
   steps:
     - id: docker-build
       name: 'Build new image'
-      run: docker build --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      run: docker build -f "${{ inputs.path }}/${{ inputs.dockerfile }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
