@@ -25,5 +25,5 @@ runs:
   steps:
     - id: docker-build
       name: 'Build new image'
-      run: docker build -f "${{ inputs.path }}/${{ inputs.dockerfile }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      run: docker build -f "${{ inputs.path }}/${{ inputs.dockerfile }}" --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
