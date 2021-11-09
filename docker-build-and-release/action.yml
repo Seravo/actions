@@ -62,4 +62,4 @@ runs:
       name: 'Push image to ghcr.io...'
       uses: seravo/actions/docker-push@split
       with:
-        image: "${{ inputs.image }}-${{ github_run_id }}"
+        image: "${{ inputs.image }}-${{ github.run_id }}"
