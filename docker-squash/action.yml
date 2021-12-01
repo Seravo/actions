@@ -16,7 +16,9 @@ runs:
     - id: install-squash
       name: Install docker-squash
       run: pip install --user https://github.com/Seravo/docker-squash/archive/master.zip
+      shell: bash
 
     - id: squash-image
       name: Squash image
       run: docker-squash -t "${{ inputs.target }}" "${{ inputs.source }}"
+      shell: bash
