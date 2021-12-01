@@ -1,0 +1,22 @@
+---
+name: 'Squash Docker image'
+description: 'Squash Docker image to remove unnecessary layers and to decrease the image size'
+
+inputs:
+  source:
+    description: 'Source image to be squashed'
+    required: true
+  target:
+    description: 'Target image for storing the squash resutls'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: install-squash
+      name: Install docker-squash
+      run: pip install --user https://github.com/Seravo/docker-squash/archive/master.zip
+
+    - id: squash-image
+      name: Squash image
+      run: docker-squash -t "${{ inputs.target }}" "${{ inputs.source }}"
