@@ -6,11 +6,16 @@ inputs:
   image:
     description: 'Name and tag for the image to be pushed'
     required: true
+  tags:
+    description: 'List of tags to be bulled. (default: latest)'
+    required: true
+    default:
+      - latest
 
 runs:
   using: composite
   steps:
     - id: docker-pll
       name: 'Pull image from repository'
-      run: docker pull "${{ inputs.image }}"
+      run: for tag in ${TAGS} ; do docker pull "${{ inputs.image }}:${tag}"
       shell: bash
