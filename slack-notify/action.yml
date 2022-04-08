@@ -21,4 +21,4 @@ runs:
     - id: send-notification
       name: 'Send notification'
       shell: bash
-      run: curl -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer ${{ inputs.slack_token }}" --data '{"text": "${{ inputs.message }}"}' "${{ inputs.webhook }}"
+      run: curl -X POST -H "Content-Type: application/json" --data '{"text": "${{ inputs.message }}"}' "${{ inputs.webhook }}"
