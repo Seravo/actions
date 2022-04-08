@@ -1,0 +1,23 @@
+---
+name: 'Run Docker image'
+description: 'Run Docker image'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be built'
+    required: true
+  args:
+    description: 'Arguments'
+    required: true
+    defaults: '-it'
+  command:
+    description: 'Command'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: docker-build
+      name: 'Build new image'
+      run: docker run "${{ inputs.args }}" "${{ inputs.image }}" "${{ inputs.command }}"
+      shell: bash
