@@ -1,0 +1,24 @@
+---
+name: 'Send Slack notification'
+description: 'Send notification to Slack'
+
+inputs:
+  webhook:
+    description: 'Slack Webhook URL'
+    required: true
+  message:
+    description: 'Message to be sent'
+    required: true
+
+outputs:
+  image-id:
+    description: 'Docker Image ID for the image'
+    value: ''
+
+runs:
+  using: composite
+  steps:
+    - id: send-notification
+      name: 'Send notification'
+      shell: bash
+      run: curl -X POST -H 'Content-Type: application/json' -H "Authorization: Bearer ${{ inputs.slack_token }}" --data '{"text": "${{ inputs.message }}"}' "${{ inputs.webhook }}"
