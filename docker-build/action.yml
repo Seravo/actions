@@ -29,5 +29,5 @@ runs:
   steps:
     - id: docker-build
       name: 'Build new image'
-      run: docker build -f "${{ inputs.path }}/${{ inputs.dockerfile }}" ${{ inputs.args }} --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
+      run: docker build --label "org.opencontainers.image.revision=${{ github.sha }}" -f "${{ inputs.path }}/${{ inputs.dockerfile }}" ${{ inputs.args }} --cache-from "${{ inputs.image }}" --tag "${{ inputs.image }}" "${{ inputs.path }}"
       shell: bash
