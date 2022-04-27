@@ -18,6 +18,10 @@ inputs:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: true
     default: ''
+  timeout:
+    description: 'Timeout for the build process'
+    required: true
+    default: 120
 
 outputs:
   image-id:
@@ -26,6 +30,7 @@ outputs:
 
 runs:
   using: composite
+  timeout-minutes: "{{ inputs.timeout }}"
   steps:
     - id: docker-build
       name: 'Build new image'
