@@ -13,6 +13,7 @@ runs:
     - id: refname
       name: 'Convert git refname to valid Docker tag'
       run: echo "::set-output name=refname::$(echo "${{ github.ref_name }}" |sed 's/\//-/g')"
+      shell: bash
 
     - id: docker-pull
       name: 'Pull image from repository'
