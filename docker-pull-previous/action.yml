@@ -1,0 +1,43 @@
+---
+name: 'Pull Docker images built previously'
+description: 'Pull previously built versions of this image'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be pulled'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: refname
+      name: 'Convert git refname to valid Docker tag'
+      run: echo "::set-output name=refname::$(echo "${{ github.ref_name }}" |sed 's/\//-/g')"
+
+    - id: docker-pull
+      name: 'Pull image from repository'
+      uses: Seravo/actions/docker-pull@v0.11
+      with:
+        image: "${{ inputs.image }}"
+      continue-on-error: true
+    
+    - id: docker-pull-run
+      name: 'Pull image from repository by run number'
+      uses: Seravo/actions/docker-pull@v0.11
+      with:
+        image: "${{ inputs.image }}-${{ github.run_number }}"
+      continue-on-error: true
+    
+    - name: 'Pull previously built image by commit id'
+      id: docker-pull-commit
+      uses: Seravo/actions/docker-pull@v0.11
+      with:
+        image: "${{ inputs.image }}-${{ github.sha }}"
+      continue-on-error: true
+      
+    - name: 'Pull previously built image by refname'
+      id: docker-pull-refname
+      uses: Seravo/actions/docker-pull@v0.11
+      with:
+        image: "${{ inputs.image }}-${{ steps.refname.outputs.refname }}"
+      continue-on-error: true
