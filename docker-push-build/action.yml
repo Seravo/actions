@@ -1,0 +1,55 @@
+---
+name: 'Push Docker images to speed up further builds'
+description: 'Push Docker image to remote repository'
+
+inputs:
+  image:
+    description: 'Name and tag for the image to be pushed'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: refname
+      name: 'Convert git refname to valid Docker tag'
+      run: echo "::set-output name=refname::$(echo "${{ github.ref_name }}" |sed 's/\//-/g')"
+      shell: bash
+    
+    - id: docker-tag-run
+      name: Tag image with run number
+      uses: Seravo/actions/docker-tag@v0.16
+      with:
+        source: "${{ inputs.image }}"
+        target: "${{ inputs.image }}-${{ github.run_number }}"
+
+    - id: docker-push-run
+      name: Push image with run number
+      uses: Seravo/actions/docker-push@v0.16
+      with:
+        image: "${{ inputs.image }}-${{ github.run_number }}"
+    
+    - id: docker-tag-commit
+      name: Tag image with commit id
+      uses: Seravo/actions/docker-tag@v0.16
+      with:
+        source: "${{ inputs.image }}"
+        target: "${{ inputs.image }}-${{ github.sha }}"
+
+    - id: docker-push-commit
+      name: Push image with commit id
+      uses: Seravo/actions/docker-push@v0.16
+      with:
+        image: "${{ inputs.image }}-${{ github.sha }}"
+    
+    - id: docker-tag-refname
+      name: Tag image with refname
+      uses: Seravo/actions/docker-tag@v0.16
+      with:
+        source: "${{ inputs.image }}"
+        target: "${{ inputs.image }}-${{ steps.refname.outputs.refname }}"
+
+    - id: docker-push-refname
+      name: Push image with refname
+      uses: Seravo/actions/docker-push@v0.16
+      with:
+        image: "${{ inputs.image }}-${{ steps.refname.outputs.refname }}"
