@@ -18,5 +18,5 @@ runs:
 
     - id: lint
       name: 'Run yamllint'
-      run: find "${{ inputs.path }}" -type f \( -iname "*.yml" -o -iname "*.yaml" \) -exec yamllint "{}" \;
+      run: yamllint "${{ inputs.path }}"
       shell: bash
