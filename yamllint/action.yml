@@ -18,5 +18,5 @@ runs:
 
     - id: lint
       name: 'Run yamllint'
-      run: yamllint "${{ inputs.path }}"
+      run: yamllint -f github "${{ inputs.path }}"
       shell: bash
