@@ -1,0 +1,21 @@
+---
+name: 'Lint YAML files'
+description: 'Run linting for YAML files using yamllint'
+
+inputs:
+  path:
+    description: 'Path to run the linting against (default: .)'
+    required: true
+    default: '.'
+
+runs:
+  using: composite
+  steps:
+    - id: install-dependencies
+      name: 'Install dependencies'
+      run: sudo apt-get install yamllint
+      shell: bash
+
+    - id: lint
+      name: 'Run yamllint'
+      run: find "${{ inputs.path }}" -type f \(-iname "*.yml" -o -iname "*.yaml"\) -exec yamllint "{}" \;
