@@ -6,11 +6,21 @@ inputs:
   image:
     description: 'Name and tag for the image to be pushed'
     required: true
+  target:
+    description: 'Optionally tag pulled image'
+    required: false
 
 runs:
   using: composite
   steps:
-    - id: docker-pll
-      name: 'Pull image from repository'
+    - id: docker-pull
+      name: 'Pull image ${{ inputs.image }} from repository'
       run: docker pull "${{ inputs.image }}"
       shell: bash
+
+    - id: docker-tag
+      name: 'Tag pulled image as ${{ inputs.target || inputs.image }}'
+      uses: seravo/actions/docker-tag@v0.19
+      with:
+        source: "${{ inputs.image }}"
+        target: "${{ inputs.target || inputs.image }}"
