@@ -1,0 +1,23 @@
+---
+name: 'Tag and push Docker image'
+description: 'Tags Docker image with new name and then pushes the new image'
+
+inputs:
+  source:
+    description: 'Source image/tag'
+    required: true
+  target:
+    description: 'Target image/tag'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: seravo/actions/docker-tag@v0.20
+      with:
+        source: "${{ inputs.source }}"
+        target: "${{ inputs.target }}"
+
+    - uses: seravo/actions/docker-push@v0.20
+      with:
+        image: "${{ inputs.target }}"
