@@ -19,7 +19,12 @@ inputs:
 runs:
   using: composite
   steps:
+    - id: print-version
+      name: Print version
+      shell: bash
+      run: buildah --version
+
     - id: buildah-login
       name: Login to container registry
-      run: echo "${{ inputs.access-token }}" | buildah login "${{ inputs.service }}" -u "${{ inputs.username }}" --password-stdin
+      run: echo "${{ inputs.access-token }}" | buildah login --username "${{ inputs.username }}" --password-stdin "${{ inputs.service }}"
       shell: bash
