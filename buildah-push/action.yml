@@ -6,6 +6,9 @@ inputs:
   image:
     description: 'Name and tag for the image to be pushed'
     required: true
+  manifest:
+    description: 'Buildah manifest name'
+    required: true
 
 runs:
   using: composite
@@ -17,5 +20,5 @@ runs:
 
     - id: buildah-push
       name: 'Push image to repository'
-      run: buildah push "${{ inputs.image }}"
+      run: buildah manifest push "${{ inputs.manifest }}" "docker://${{ inputs.image }}"
       shell: bash
