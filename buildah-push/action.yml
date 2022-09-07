@@ -10,6 +10,11 @@ inputs:
 runs:
   using: composite
   steps:
+    - id: list-images
+      name: List images
+      run: buildah images
+      shell: bash
+
     - id: buildah-push
       name: 'Push image to repository'
       run: buildah push "${{ inputs.image }}"
