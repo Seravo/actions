@@ -1,0 +1,25 @@
+---
+name: 'Login Buildah'
+description: 'Login Buildah to Container Registry (default ghcr.io) for further pull/push operations'
+
+inputs:
+  access-token:
+    description: 'Access Token / password for authenticating to services'
+    required: true
+    default: ${{ github.token }}
+  service:
+    description: 'Service we are logging in'
+    required: true
+    default: ghcr.io
+  username:
+    description: 'Username'
+    required: true
+    default: x-access-token
+
+runs:
+  using: composite
+  steps:
+    - id: buildah-login
+      name: Login to container registry
+      run: echo "${{ inputs.access-token }}" | buildah login "${{ inputs.service }}" -u "${{ inputs.username }}" --password-stdin
+      shell: bash
