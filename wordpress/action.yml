@@ -1,0 +1,8 @@
+---
+name: "Run acceptance tests for a WordPress site"
+description: "Run acceptance tests using Seravo CI environment"
+author: "Seravo Oy <help@seravo.com>"
+
+runs:
+  using: 'docker'
+  image: 'docker.io/seravo/wordpress:ci'
