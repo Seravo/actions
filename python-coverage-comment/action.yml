@@ -1,0 +1,31 @@
+---
+name: "Coverage Comment"
+descripion: "Post Python code coverage as a pull request comment"
+
+inputs:
+  github-token:
+    description: "GitHub Access Token for authenticating to GitHub API"
+    required: true
+    default: ${{ github.token }}
+  coverage-json:
+    description: "JSON report of code coverage"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - id: install
+      name: Install dependencies
+      run: pip3 install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+    - id: comment
+      name: Create a comment to target PR
+      run: python3 ${{ github.action_path }}/comment.py >> $GITHUB_STEP_SUMMARY
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        COVERAGE_JSON: ${{ inputs.coverage-json }}
+        GITHUB_URL: ${{ github.api_url }}
+        OWNER: ${{ github.repository_owner }}
+        REPOSITORY: ${{ github.event.repository.name }}
+        ISSUE_NUMBER: ${{ github.event.pull_request.number }}
