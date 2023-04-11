@@ -1,0 +1,40 @@
+---
+name: "Run flake8"
+description: "Lint code with flake8"
+
+inputs:
+  path:
+    description: "Target path"
+    required: true
+    default: "."
+  python_version:
+    description: "Python version to use"
+    required: true
+    default: "3.10"
+  dev_requirements_path:
+    description: "Path to a dev-requirements.txt file"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - id: setup
+      name: Setup python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - id: install
+      name: Install flake8
+      env:
+        dev_requirements_path: ${{ github.action_path }}/requirements.txt
+      shell: bash
+      run: >-
+        pip3 install
+        --require-hashes
+        -r ${{ inputs.dev_requirements_path || env.dev_requirements_path }}
+
+    - id: check
+      name: Check code formatting
+      shell: bash
+      run: flake8 ${{ inputs.path }}

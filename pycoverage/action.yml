@@ -1,0 +1,54 @@
+---
+name: "Measure code coverage"
+description: "Measure code coverage with coverage.py"
+
+inputs:
+  path:
+    description: "Target path"
+    required: true
+    default: "tests"
+  python_version:
+    description: "Python version to use"
+    required: true
+    default: "3.10"
+  requirements_path:
+    description: "Path to a requirements.txt file"
+    required: true
+  dev_requirements_path:
+    description: "Path to a dev-requirements.txt file"
+    required: false
+
+outputs:
+  coverage_json:
+    description: JSON report of the code coverage
+    value: ${{ steps.coverage.outputs.coverage }}
+
+runs:
+  using: composite
+  steps:
+    - id: setup
+      name: Setup python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - id: install
+      name: Install dependencies
+      env:
+        dev_requirements_path: ${{ github.action_path }}/requirements.txt
+      shell: bash
+      run: >-
+        pip3 install
+        --require-hashes
+        -r ${{ inputs.requirements_path }}
+        -r ${{ inputs.dev_requirements_path || env.dev_requirements_path }}
+
+    - id: coverage
+      name: Run code coverage check
+      shell: bash
+      run: |
+        coverage run -m pytest ${{ inputs.path }}
+        coverage report
+        coverage json -o coverage.json
+        JSON=$(cat coverage.json)
+        echo "coverage=$JSON" >> $GITHUB_OUTPUT
