@@ -29,7 +29,7 @@ runs:
         python-version: ${{ inputs.python_version }}
 
     - id: install
-      name: Install flake8
+      name: Install dependencies
       env:
         dev_requirements_path: ${{ github.action_path }}/requirements.txt
       shell: bash
