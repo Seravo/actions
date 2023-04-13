@@ -37,4 +37,4 @@ runs:
     - id: check
       name: Check code formatting
       shell: bash
-      run: black ${{ inputs.path }}
+      run: black --check ${{ inputs.path }}
