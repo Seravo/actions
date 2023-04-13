@@ -1,0 +1,44 @@
+---
+name: "Run vulture"
+description: "Check for dead Python code"
+
+inputs:
+  path:
+    description: "Target path"
+    required: true
+    default: "."
+  python_version:
+    description: "Python version to use"
+    required: true
+    default: "3.10"
+  dev_requirements_path:
+    description: "Path to a dev-requirements.txt file"
+    required: false
+  min_confidence:
+    default: 75
+    required: true
+    description: "Minimum confidence for dead code to be reported"
+
+runs:
+  using: composite
+  steps:
+    - id: setup
+      name: Setup python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - id: install
+      name: Install flake8
+      env:
+        dev_requirements_path: ${{ github.action_path }}/requirements.txt
+      shell: bash
+      run: >-
+        pip3 install
+        --require-hashes
+        -r ${{ inputs.dev_requirements_path || env.dev_requirements_path }}
+
+    - id: check
+      name: Check for dead code
+      shell: bash
+      run: python3 -m vulture --min-confidence "${{ inputs.min_confidence }}" ${{ inputs.path }}

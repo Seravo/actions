@@ -1,0 +1,4 @@
+toml==0.10.2 \
+    --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b
+vulture==2.7 \
+    --hash=sha256:bccc51064ed76db15a6b58277cea8885936af047f53d2655fb5de575e93d0bca
