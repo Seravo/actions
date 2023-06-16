@@ -38,7 +38,8 @@ runs:
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
-          ${{ inputs.cache == 'yes' && '--cache-from ${{ inputs.image }}' || ''}} \
+          ${{ inputs.cache == 'yes' && '' || '--no-cache' }} \
+          --cache-from "${{ inputs.image }}" \
           --tag "${{ inputs.image }}" \
           "${{ inputs.path }}"
       shell: bash
