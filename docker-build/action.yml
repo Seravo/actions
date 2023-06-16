@@ -14,6 +14,10 @@ inputs:
     description: 'Name of Dockerfile'
     required: true
     default: 'Dockerfile'
+  cache:
+    description: "Use cache"
+    required: true
+    default: "yes"
   args:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: true
@@ -34,7 +38,7 @@ runs:
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
-          --cache-from "${{ inputs.image }}" \
+          ${{ inputs.cache == 'yes' && '--cache-from ${{ inputs.image }}' || ''}} \
           --tag "${{ inputs.image }}" \
           "${{ inputs.path }}"
       shell: bash
