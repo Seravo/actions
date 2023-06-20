@@ -12,7 +12,7 @@ runs:
   steps:
     - id: refname
       name: 'Convert git refname to valid Docker tag'
-      run: echo "::set-output name=refname::$(echo "${{ github.ref_name }}" |sed 's/\//-/g')"
+      run: echo "refname=$(echo "${{ github.ref_name }}" |sed 's/\//-/g')" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - id: docker-pull
