@@ -37,7 +37,7 @@ jobs:
       COVERAGE_REPORT: ${{ needs.testing.outputs.coverage_report }}
     steps:
       - name: Show coverage results in PR
-        uses: Seravo/actions/python-coverage-comment@v0.23
+        uses: Seravo/actions/python-coverage-comment@v1.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           coverage-json: ${{ env.COVERAGE_REPORT }}

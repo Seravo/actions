@@ -11,4 +11,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run linting
-        uses: seravo/actions/yamllint@v0.25
+        uses: seravo/actions/yamllint@v1.2.3
