@@ -19,5 +19,9 @@ runs:
   steps:
     - id: docker-build
       name: 'Build new image'
-      run: docker run "${{ inputs.args }}" "${{ inputs.image }}" "${{ inputs.command }}"
+      run: |
+        docker run \
+          ${{ inputs.args }} \
+          "${{ inputs.image }}" \
+          "${{ inputs.command }}"
       shell: bash
