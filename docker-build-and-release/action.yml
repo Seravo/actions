@@ -28,18 +28,19 @@ runs:
   using: composite
   steps:
     - id: docker-login
-      uses: seravo/actions/docker-login@v1.3.2
+      uses: seravo/actions/docker-login@v1.4.0
       with:
         access-token: "${{ inputs.access-token }}"
     
     - id: docker-pull
+      continue-on-error: true
       name: 'Try to fetch latest image to speed up builds'
-      uses: seravo/actions/docker-pull@v1.3.2
+      uses: seravo/actions/docker-pull@v1.4.0
       with:
         image: "${{ inputs.image }}"
     
     - id: docker-build
-      uses: seravo/actions/docker-build@v1.3.2
+      uses: seravo/actions/docker-build@v1.4.0
       with:
         image: ${{ inputs.image }}
         path: ${{ inputs.path }}
@@ -47,19 +48,19 @@ runs:
 
     - id: docker-tag-job
       name: 'Tag image by job id'
-      uses: seravo/actions/docker-tag@v1.3.2
+      uses: seravo/actions/docker-tag@v1.4.0
       with:
         source: "${{ inputs.image }}"
         target: "${{ inputs.image }}-${{ github.run_id }}"
     
     - id: docker-push
       name: 'Push image to ghcr.io...'
-      uses: seravo/actions/docker-push@v1.3.2
+      uses: seravo/actions/docker-push@v1.4.0
       with:
         image: ${{ inputs.image }}
     
     - id: docker-push-job
       name: 'Push image to ghcr.io...'
-      uses: seravo/actions/docker-push@v1.3.2
+      uses: seravo/actions/docker-push@v1.4.0
       with:
         image: "${{ inputs.image }}-${{ github.run_id }}"

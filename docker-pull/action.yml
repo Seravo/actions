@@ -20,7 +20,7 @@ runs:
 
     - id: docker-tag
       name: 'Tag pulled image as ${{ inputs.target || inputs.image }}'
-      uses: seravo/actions/docker-tag@v1.3.2
+      uses: seravo/actions/docker-tag@v1.4.0
       with:
         source: "${{ inputs.image }}"
         target: "${{ inputs.target || inputs.image }}"

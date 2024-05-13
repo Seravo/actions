@@ -13,11 +13,11 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: seravo/actions/docker-tag@v1.3.2
+    - uses: seravo/actions/docker-tag@v1.4.0
       with:
         source: "${{ inputs.source }}"
         target: "${{ inputs.target }}"
 
-    - uses: seravo/actions/docker-push@v1.3.2
+    - uses: seravo/actions/docker-push@v1.4.0
       with:
         image: "${{ inputs.target }}"
