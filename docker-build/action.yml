@@ -22,6 +22,10 @@ inputs:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: true
     default: ''
+  multiarch:
+    description: 'Build multiarch images'
+    required: false
+    default: ''
 
 outputs:
   image-id:
@@ -31,6 +35,14 @@ outputs:
 runs:
   using: composite
   steps:
+    - if: "${{ inputs.multiarch != '' }}"
+      id: init-multiarch
+      name: 'Initialize multiarch builder'
+      run: |
+        docker buildx create --use --name mybuild node-amd64 && \
+        docker buildx create --append --name mybuild node-arm64
+      shell: bash
+
     - id: docker-build
       name: 'Build new image'
       run: |
