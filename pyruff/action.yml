@@ -34,4 +34,4 @@ runs:
     - id: check
       name: Lint code
       shell: bash
-      run: ruff .
+      run: ruff check .
