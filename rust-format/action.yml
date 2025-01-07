@@ -1,0 +1,10 @@
+---
+name: Format rust
+
+runs:
+  using: composite
+  steps: 
+    - id: format-rust
+      name: Format rust code
+      shell: bash
+      run: cargo fmt --all -- --check --verbose
