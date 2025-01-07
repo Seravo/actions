@@ -1,0 +1,11 @@
+---
+name: Lint rust
+
+runs:
+  using: composite
+  steps: 
+    - id: lint-rust
+      name: Lint rust code
+      shell: bash
+      # Dwarnings: deny warnings
+      run: cargo clippy --all-features -- -Dwarnings
