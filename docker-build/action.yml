@@ -18,6 +18,7 @@ inputs:
     description: "Use cache"
     required: true
     default: "yes"
+  
   args:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: true
@@ -31,15 +32,24 @@ outputs:
 runs:
   using: composite
   steps:
+    - id: docker-build-setup
+      name: 'Setup a customer builder'
+      shell: bash
+      run: |
+        docker buildx create \
+          --name seravo-customer-builder \
+          --driver docker-container
+
     - id: docker-build
       name: 'Build new image'
       run: |
-        docker buildx build \
+        docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
           --cache-from "${{ inputs.image }}" \
+          --load \
           --tag "${{ inputs.image }}" \
           "${{ inputs.path }}"
       shell: bash
