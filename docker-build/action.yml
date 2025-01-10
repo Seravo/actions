@@ -18,7 +18,10 @@ inputs:
     description: "Use cache"
     required: true
     default: "yes"
-  
+  default-cache:
+    description: "Use cache from input image"
+    required: true
+    default: "yes"
   args:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: true
@@ -48,7 +51,7 @@ runs:
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
-          --cache-from "${{ inputs.image }}" \
+          ${{ inputs.default-cache == 'yes' && '--cache-from ${{ inputs.image }}' || '' }} \
           --load \
           --tag "${{ inputs.image }}" \
           "${{ inputs.path }}"
