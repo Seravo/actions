@@ -9,14 +9,9 @@ inputs:
     default: '.'
 
 runs:
-  using: composite
-  steps:
-    - id: install-dependencies
-      name: 'Install dependencies'
-      run: sudo apt-get install yamllint
-      shell: bash
-
-    - id: lint
-      name: 'Run yamllint'
-      run: yamllint -f github "${{ inputs.path }}"
-      shell: bash
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - '-f'
+    - 'github'
+    - ${{ inputs.path }}

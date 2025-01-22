@@ -1,14 +1,14 @@
 ---
 name: "Lint YAML files"
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   yamllint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Setup repository
         uses: actions/checkout@v4
 
       - name: Run linting
-        uses: seravo/actions/yamllint@v1.2.3
+        uses: seravo/actions/yamllint@v1.9.0
