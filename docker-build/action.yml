@@ -48,6 +48,8 @@ runs:
       run: |
         docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
+          --label "org.opencontainers.image.authors=Seravo Oy" \
+          --label "org.opencontainers.image.vendor=Seravo Oy" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
