@@ -50,6 +50,7 @@ runs:
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           --label "org.opencontainers.image.authors=Seravo Oy" \
           --label "org.opencontainers.image.vendor=Seravo Oy" \
+          --label "com.seravo.build.execution-id=${{ github.run_id }}.${{ github.run_number }}" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
