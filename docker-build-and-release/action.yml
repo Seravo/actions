@@ -3,64 +3,55 @@ name: 'Build and release Docker image'
 description: 'Build Docker image from sources, and release it into GitHub package registry (ghcr.io)'
 
 inputs:
-  access-token:
-    description: 'GitHub Access Token for authenticating to services'
+  image_name:
+    description: 'Name of the image to build and release (eg. ghcr.io/seravo/wordpress)'
     required: true
-    default: ${{ github.token }}
-  image:
-    description: 'Name and tag for the image to be built'
+  tag:
+    description: 'Tag of the image to build and release (eg. latest)'
     required: true
   path:
     description: 'Build path for Docker (default: .)'
-    required: true
+    required: false
     default: '.'
   args:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
-    required: true
+    required: false
     default: ''
-
-outputs:
-  image-id:
-    description: 'Docker Image ID for the image'
-    value: ''
 
 runs:
   using: composite
   steps:
-    - id: docker-login
-      uses: seravo/actions/docker-login@v1.4.0
-      with:
-        access-token: "${{ inputs.access-token }}"
-    
-    - id: docker-pull
-      continue-on-error: true
-      name: 'Try to fetch latest image to speed up builds'
-      uses: seravo/actions/docker-pull@v1.4.0
-      with:
-        image: "${{ inputs.image }}"
-    
-    - id: docker-build
-      uses: seravo/actions/docker-build@v1.4.0
-      with:
-        image: ${{ inputs.image }}
-        path: ${{ inputs.path }}
-        args: ${{ inputs.args }} 
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - id: docker-tag-job
-      name: 'Tag image by job id'
-      uses: seravo/actions/docker-tag@v1.4.0
+    - id: docker-login
+      uses: Seravo/actions/docker-login@v1.9.0
+      name: Login to GitHub Container Registry
+
+    # To speed up builds, try to use previously built image as cache source.
+    - if: ${{ github.event_name != 'schedule' }}
+      name: Pull previously built image
+      id: docker-pull
+      uses: Seravo/actions/docker-pull@v1.9.0
       with:
-        source: "${{ inputs.image }}"
-        target: "${{ inputs.image }}-${{ github.run_id }}"
-    
-    - id: docker-push
-      name: 'Push image to ghcr.io...'
-      uses: seravo/actions/docker-push@v1.4.0
+        image: ${{ inputs.image_name }}
+      continue-on-error: true
+
+    - name: Clean dashes from tag
+      id: clean-tag
+      shell: bash
+      run: echo "tag=$(echo "${{ inputs.tag }}" |sed 's/\//-/g')" >> $GITHUB_OUTPUT
+
+    - id: docker-build
+      uses: Seravo/actions/docker-build@v1.9.0
+      name: Build image
       with:
-        image: ${{ inputs.image }}
-    
-    - id: docker-push-job
-      name: 'Push image to ghcr.io...'
-      uses: seravo/actions/docker-push@v1.4.0
+        image: "${{ inputs.image_name}}:${{ steps.clean-tag.outputs.tag }}"
+        path: ${{ inputs.path }}
+        args: ${{ inputs.args }}
+
+    - name: Push new ${{ inputs.image_name}} image to registry
+      id: docker-push-master
+      uses: Seravo/actions/docker-push@v1.9.0
       with:
-        image: "${{ inputs.image }}-${{ github.run_id }}"
+        image: "${{ inputs.image_name }}:${{ steps.clean-tag.outputs.tag }}"
