@@ -50,8 +50,8 @@ runs:
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
-          ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
-          ${{ inputs.default-cache == 'yes' && '--cache-from ${{ inputs.image }}' || '' }} \
+          ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
+          ${{ inputs.default-cache == 'yes' && format('--cache-from {0}', inputs.image) || '' }} \
           --load \
           --tag "${{ inputs.image }}" \
           "${{ inputs.path }}"
