@@ -41,7 +41,7 @@ runs:
       name: Login to GitHub Container Registry
 
     # To speed up builds, try to use previously built image as cache source.
-    - if: ${{ github.event_name != 'schedule' }}
+    - if: ${{ github.event_name != 'schedule' && inputs.cache == 'yes' }}
       name: Pull previously built image
       id: docker-pull
       uses: Seravo/actions/docker-pull@v1.10.0
