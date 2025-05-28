@@ -17,6 +17,18 @@ inputs:
     description: 'Additional arguments for Docker build. (eg. --build-arg NAME="NAME")'
     required: false
     default: ''
+  dockerfile:
+    description: 'Name of Dockerfile'
+    required: true
+    default: 'Dockerfile'
+  cache:
+    description: "Use cache"
+    required: true
+    default: "yes"
+  default-cache:
+    description: "Use cache from input image"
+    required: true
+    default: "yes"
 
 runs:
   using: composite
@@ -49,6 +61,9 @@ runs:
         image: "${{ inputs.image_name}}:${{ steps.clean-tag.outputs.tag }}"
         path: ${{ inputs.path }}
         args: ${{ inputs.args }}
+        dockerfile: ${{ inputs.dockerfile }}
+        cache: ${{ inputs.cache }}
+        default-cache: ${{ inputs.default-cache }}
 
     - name: Push new ${{ inputs.image_name}} image to registry
       id: docker-push-master
