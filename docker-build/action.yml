@@ -43,11 +43,17 @@ runs:
           --name seravo-customer-builder \
           --driver docker-container
 
+    - id: read-git-version
+      name: 'Read version information with git'
+      shell: bash
+      run: echo "version=$(git describe --always)" >> $GITHUB_OUTPUT
+
     - id: docker-build
       name: 'Build new image'
       run: |
         docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
+          --label "org.opencontainers.image.version=${{ steps.read-git-version.outputs.version }}" \                                                                      
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
