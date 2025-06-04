@@ -1,0 +1,22 @@
+---
+name: 'Collect list of featuers'
+description: 'Collects features from the repository into space-separated list'
+
+inputs:
+  path:
+    description: 'Path to the directory containing feature flags (default: .seravo/features)'
+    required: true
+    default: '.seravo/features'
+
+outputs:
+  features:
+    description: 'Features from the repository'
+    value: ${{ steps.collect-features-json.outputs.features }}
+
+runs:
+  using: composite
+  steps:
+    - id: collect-features-json
+      name: Collect list of features
+      shell: bash
+      run: echo "features=$(find "${{ inputs.path }}" -type f -printf '%f\0' |xargs -0 --no-run-if-empty |jq -Rnc '[inputs]')" >> $GITHUB_OUTPUT
