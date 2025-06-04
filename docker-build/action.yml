@@ -50,12 +50,17 @@ runs:
         git fetch --tags && \
         echo "version=$(git describe --always)" >> $GITHUB_OUTPUT
 
+    - id: read-features
+      name: Read repository features
+      uses: Seravo/actions/features@v1.13.0
+
     - id: docker-build
       name: 'Build new image'
       run: |
         docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           --label "org.opencontainers.image.version=${{ steps.read-git-version.outputs.version }}" \
+          --label 'com.seravo.features=${{ steps.read-features.outputs.features }}' \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
