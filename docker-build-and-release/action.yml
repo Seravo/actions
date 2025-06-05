@@ -29,6 +29,10 @@ inputs:
     description: "Use cache from input image"
     required: true
     default: "yes"
+  slack_webhook_url:
+    description: 'Slack webhook URL to notify when build is done (optional)'
+    required: false
+    default: ''
 
 runs:
   using: composite
@@ -67,3 +71,27 @@ runs:
       uses: Seravo/actions/docker-push@v1.10.0
       with:
         image: "${{ inputs.image_name }}:${{ steps.clean-tag.outputs.tag }}"
+
+    - name: Notify about build completion (success)
+      if: ${{ inputs.slack_webhook_url != '' && always() && steps.docker-push-master.outcome == 'success' }}
+      uses: Seravo/slack-github-action@v1.21
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.slack_webhook_url }}
+      with:
+        payload: |
+          {
+            "message": ":white_check_mark: ${{ inputs.image_name }} build completed successfully!",
+            "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+
+    - name: Notify about build completion (failure)
+      if: ${{ inputs.slack_webhook_url != '' && always() && steps.docker-push-master.outcome != 'success' }}
+      uses: Seravo/slack-github-action@v1.21
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.slack_webhook_url }}
+      with:
+        payload: |
+          {
+            "message": ":x: ${{ inputs.image_name }} build failed!",
+            "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
