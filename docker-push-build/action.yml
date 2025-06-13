@@ -17,39 +17,39 @@ runs:
     
     - id: docker-tag-run
       name: Tag image with run number
-      uses: Seravo/actions/docker-tag@v1.2.3
+      uses: Seravo/actions/docker-tag@v1.15.0
       with:
         source: "${{ inputs.image }}"
         target: "${{ inputs.image }}-${{ github.run_number }}"
 
     - id: docker-push-run
       name: Push image with run number
-      uses: Seravo/actions/docker-push@v1.2.3
+      uses: Seravo/actions/docker-push@v1.15.0
       with:
         image: "${{ inputs.image }}-${{ github.run_number }}"
     
     - id: docker-tag-commit
       name: Tag image with commit id
-      uses: Seravo/actions/docker-tag@v1.2.3
+      uses: Seravo/actions/docker-tag@v1.15.0
       with:
         source: "${{ inputs.image }}"
         target: "${{ inputs.image }}-${{ github.sha }}"
 
     - id: docker-push-commit
       name: Push image with commit id
-      uses: Seravo/actions/docker-push@v1.2.3
+      uses: Seravo/actions/docker-push@v1.15.0
       with:
         image: "${{ inputs.image }}-${{ github.sha }}"
     
     - id: docker-tag-refname
       name: Tag image with refname
-      uses: Seravo/actions/docker-tag@v1.2.3
+      uses: Seravo/actions/docker-tag@v1.15.0
       with:
         source: "${{ inputs.image }}"
         target: "${{ inputs.image }}-${{ steps.refname.outputs.refname }}"
 
     - id: docker-push-refname
       name: Push image with refname
-      uses: Seravo/actions/docker-push@v1.2.3
+      uses: Seravo/actions/docker-push@v1.15.0
       with:
         image: "${{ inputs.image }}-${{ steps.refname.outputs.refname }}"
