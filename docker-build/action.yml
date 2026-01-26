@@ -43,12 +43,16 @@ runs:
           --name seravo-customer-builder \
           --driver docker-container
 
+    - id: pull-git-tags
+      if: ${{ github.ref_type != 'tag' }}
+      name: 'Pull tags from git'
+      shell: bash
+      run: git fetch --tags
+
     - id: read-git-version
       name: 'Read version information with git'
       shell: bash
-      run: |
-        git fetch --tags && \
-        echo "version=$(git describe --always)" >> $GITHUB_OUTPUT
+      run: echo "version=$(git describe --always)" >> $GITHUB_OUTPUT
 
     - id: read-features
       name: Read repository features
