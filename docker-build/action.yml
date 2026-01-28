@@ -63,7 +63,8 @@ runs:
       run: |
         docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
-          --label "org.opencontainers.image.version=${{ steps.read-git-version.outputs.version }}" \
+          --label "org.opencontainers.image.version=${{ steps.read-git-version.outputs.version }}+${{ github.run_number }}.${{ github.run_id }}.${{ github.run_attempt }}" \
+                                                                                                                                                                         i
           --label 'com.seravo.features=${{ steps.read-features.outputs.features }}' \
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
