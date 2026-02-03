@@ -38,14 +38,14 @@ runs:
   using: composite
   steps:
     - id: docker-login
-      uses: Seravo/actions/docker-login@v1.16.1
+      uses: seravo/actions/docker-login@v1.16.4
       name: Login to GitHub Container Registry
 
     # To speed up builds, try to use previously built image as cache source.
     - if: ${{ github.event_name != 'schedule' && inputs.cache == 'yes' }}
       name: Pull previously built image
       id: docker-pull
-      uses: Seravo/actions/docker-pull@v1.16.1
+      uses: seravo/actions/docker-pull@v1.16.4
       with:
         image: ${{ inputs.image_name }}
       continue-on-error: true
@@ -56,7 +56,7 @@ runs:
       run: echo "tag=$(echo "${{ inputs.tag }}" |sed 's/\//-/g')" >> $GITHUB_OUTPUT
 
     - id: docker-build
-      uses: Seravo/actions/docker-build@v1.16.1
+      uses: seravo/actions/docker-build@v1.16.4
       name: Build image
       with:
         image: "${{ inputs.image_name}}:${{ steps.clean-tag.outputs.tag }}"
@@ -68,7 +68,7 @@ runs:
 
     - name: Push new ${{ inputs.image_name}} image to registry
       id: docker-push-master
-      uses: Seravo/actions/docker-push@v1.16.1
+      uses: seravo/actions/docker-push@v1.16.4
       with:
         image: "${{ inputs.image_name }}:${{ steps.clean-tag.outputs.tag }}"
 

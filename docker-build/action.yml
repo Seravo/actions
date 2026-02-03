@@ -56,7 +56,7 @@ runs:
 
     - id: read-features
       name: Read repository features
-      uses: Seravo/actions/features@v1.15.0
+      uses: seravo/actions/features@v1.16.4
 
     - id: docker-build
       name: 'Build new image'
