@@ -4,7 +4,10 @@ description: 'Build Docker image from sources'
 
 inputs:
   image:
-    description: 'Name and tag for the image to be built'
+    description: 'Name for the image to be built (eg. ghcr.io/seravo/myimage)'
+    required: true
+  tag:
+    description: 'Tag for the image to be built (eg. latest)'
     required: true
   path:
     description: 'Build path for Docker (default: .)'
@@ -70,6 +73,6 @@ runs:
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
           ${{ inputs.default-cache == 'yes' && format('--cache-from {0}', inputs.image) || '' }} \
           --load \
-          --tag "${{ inputs.image }}" \
+          --tag "${{ inputs.image }}:${{ inputs.tag }}" \
           "${{ inputs.path }}"
       shell: bash
