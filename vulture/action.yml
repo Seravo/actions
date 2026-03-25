@@ -15,7 +15,7 @@ inputs:
     description: "Path to a dev-requirements.txt file"
     required: false
   min_confidence:
-    default: 75
+    default: "75"
     required: true
     description: "Minimum confidence for dead code to be reported"
 
@@ -24,7 +24,7 @@ runs:
   steps:
     - id: setup
       name: Setup python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ inputs.python_version }}
         cache: 'pip'
