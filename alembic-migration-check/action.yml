@@ -1,0 +1,20 @@
+---
+name: "Check Alembic migrations"
+description: "Verify that Alembic down_revision references exist on disk"
+
+inputs:
+  migration_dir:
+    description: "migration directory"
+    required: true
+    default: "migrations"
+
+runs:
+  using: composite
+  steps:  
+    - id: check
+      name: Check Alembic migrations
+      shell: bash
+      env:
+        MIGRATION_DIR: ${{ inputs.migration_dir }}
+      run:
+        python3 ${{ github.action_path }}/check_down_migrations.py
