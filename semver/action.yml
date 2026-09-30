@@ -31,21 +31,27 @@ runs:
         # 1. Strip leading 'v'
         INPUT_VER=$(echo "${{ inputs.version }}" | sed 's/^v//')
         
+        # Check if the variable starts with a digit (0-9)
+        if [[ ! "${INPUT_VER}" =~ ^[0-9] ]]; then
+          echo "::error::INPUT_VER ('${INPUT_VER}') must start with a digit (0-9). Aborting."
+          exit 1
+        fi
+
         # 2. Extract the core SemVer (strips everything after - or +)
         # 1.2.3-alpha.1 -> 1.2.3
-        CLEAN_VER=$(echo "$INPUT_VER" | sed -E 's/[-+].+$//')
+        CLEAN_VER=$(echo "${INPUT_VER}" | sed -E 's/[-+].+$//')
         
         # 3. Split the clean version
-        MAJOR=$(echo "$CLEAN_VER" | cut -d. -f1)
-        MINOR=$(echo "$CLEAN_VER" | cut -d. -f2)
-        PATCH=$(echo "$CLEAN_VER" | cut -d. -f3)
+        MAJOR=$(echo "${CLEAN_VER}" | cut -d. -f1)
+        MINOR=$(echo "${CLEAN_VER}" | cut -d. -f2)
+        PATCH=$(echo "${CLEAN_VER}" | cut -d. -f3)
         
         # 4. Set Outputs
-        echo "major=$MAJOR" >> $GITHUB_OUTPUT
-        echo "major_minor=$MAJOR.$MINOR" >> $GITHUB_OUTPUT
-        echo "full=$CLEAN_VER" >> $GITHUB_OUTPUT
-        echo "raw=$INPUT_VER" >> $GITHUB_OUTPUT # Keeps the alpha/beta suffix if needed
-        if [[ "$INPUT_VER" == *"-"* ]]; then
+        echo "major=${MAJOR}" >> $GITHUB_OUTPUT
+        echo "major_minor=${MAJOR}.${MINOR}" >> $GITHUB_OUTPUT
+        echo "full=${CLEAN_VER}" >> $GITHUB_OUTPUT
+        echo "raw=${INPUT_VER}" >> $GITHUB_OUTPUT # Keeps the alpha/beta suffix if needed
+        if [[ "${INPUT_VER}" == *"-"* ]]; then
           echo "is_prerelease=true" >> $GITHUB_OUTPUT
         else
           echo "is_prerelease=false" >> $GITHUB_OUTPUT
