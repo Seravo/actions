@@ -1,0 +1,28 @@
+name: Cache Cargo
+description: Caches Cargo registry and build artifacts with custom path support
+
+inputs:
+  cache-paths:
+    description: Paths to cache
+    required: false
+    # Caches the registry index, downloaded crates, git repos, and the compiled target folder
+    default: |
+      ~/.cargo/bin/
+      ~/.cargo/registry/index/
+      ~/.cargo/registry/cache/
+      ~/.cargo/git/db/
+      target/
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Cargo registry and build artifacts
+      uses: actions/cache@v6
+      with:
+        path: ${{ inputs.cache-paths }}
+        # The key uses the OS and hashes the Cargo.lock file. 
+        # If dependencies change, the hash changes, generating a fresh cache.
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        # If a perfect match isn't found, it falls back to the most recent cache for this OS
+        restore-keys: |
+          ${{ runner.os }}-cargo-

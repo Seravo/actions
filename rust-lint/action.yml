@@ -1,4 +1,3 @@
----
 name: Lint rust
 
 runs:
@@ -8,4 +7,4 @@ runs:
       name: Lint rust code
       shell: bash
       # Dwarnings: deny warnings
-      run: cargo clippy --all-features -- -Dwarnings
+      run: cargo clippy --all-features --all-targets -- -Dwarnings
