@@ -38,14 +38,14 @@ runs:
   using: composite
   steps:
     - id: docker-login
-      uses: seravo/actions/docker-login@v1.16.4
+      uses: seravo/actions/docker-login@v2.0.0
       name: Login to GitHub Container Registry
 
     # To speed up builds, try to use previously built image as cache source.
     - if: ${{ github.event_name != 'schedule' && inputs.cache == 'yes' }}
       name: Pull previously built image
       id: docker-pull
-      uses: seravo/actions/docker-pull@v1.16.4
+      uses: seravo/actions/docker-pull@v2.0.0
       with:
         image: ${{ inputs.image_name }}
       continue-on-error: true
@@ -56,10 +56,11 @@ runs:
       run: echo "tag=$(echo "${{ inputs.tag }}" |sed 's/\//-/g')" >> $GITHUB_OUTPUT
 
     - id: docker-build
-      uses: seravo/actions/docker-build@v1.16.4
+      uses: seravo/actions/docker-build@v2.0.0
       name: Build image
       with:
-        image: "${{ inputs.image_name}}:${{ steps.clean-tag.outputs.tag }}"
+        image_name: ${{ inputs.image_name}}
+        tag: ${{ steps.clean-tag.outputs.tag }}
         path: ${{ inputs.path }}
         args: ${{ inputs.args }}
         dockerfile: ${{ inputs.dockerfile }}
@@ -68,7 +69,7 @@ runs:
 
     - name: Push new ${{ inputs.image_name}} image to registry
       id: docker-push-master
-      uses: seravo/actions/docker-push@v1.16.4
+      uses: seravo/actions/docker-push@v2.0.0
       with:
         image: "${{ inputs.image_name }}:${{ steps.clean-tag.outputs.tag }}"
 

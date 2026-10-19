@@ -3,9 +3,13 @@ name: 'Build Docker image'
 description: 'Build Docker image from sources'
 
 inputs:
-  image:
-    description: 'Name and tag for the image to be built'
+  image_name:
+    description: 'Name of the image to build and release (eg. ghcr.io/seravo/wordpress)'
     required: true
+  tag:
+    description: 'Tag of the image to build and release (eg. latest)'
+    required: true
+    default: "latest"
   path:
     description: 'Build path for Docker (default: .)'
     required: true
@@ -56,11 +60,30 @@ runs:
 
     - id: read-features
       name: Read repository features
-      uses: seravo/actions/features@v1.16.4
+      uses: seravo/actions/features@v2.0.0
+
+    - id: semver
+      name: Parse version information
+      uses: Seravo/actions/semver@v2.0.0
+      with:
+        version: ${{ github.ref_name }}
+      if: ${{ github.ref_type }} == 'tag'
 
     - id: docker-build
       name: 'Build new image'
+      env:
+        IMAGE: ${{ inputs.image_name }}:${{ inputs.tag }}
+        FULL: ${{ steps.semver.outputs.full }}
+        MAJOR_MINOR: ${{ steps.semver.outputs.major_minor }}
+        MAJOR: ${{ steps.semver.outputs.major }}
       run: |
+        if [ -n "${FULL}" ]
+        then
+          TAG_ARGS="--tag ${{ inputs.image_name }}:v${FULL} --tag ${{ inputs.image_name }}:v${MAJOR_MINOR} --tag ${{ inputs.image_name }}:v${MAJOR}"
+        else
+          TAG_ARGS=""
+        fi
+
         docker buildx --builder seravo-customer-builder build \
           --label "org.opencontainers.image.revision=${{ github.sha }}" \
           --label "org.opencontainers.image.version=${{ steps.read-git-version.outputs.version }}+${{ github.run_number }}.${{ github.run_id }}.${{ github.run_attempt }}" \
@@ -68,8 +91,9 @@ runs:
           -f "${{ inputs.path }}/${{ inputs.dockerfile }}" \
           ${{ inputs.args }} \
           ${{ inputs.cache == 'no' && '--no-cache' || '' }} \
-          ${{ inputs.default-cache == 'yes' && format('--cache-from {0}', inputs.image) || '' }} \
+          ${{ inputs.default-cache == 'yes' && format('--cache-from {0}', env.IMAGE ) || '' }} \
           --load \
-          --tag "${{ inputs.image }}" \
+          --tag "${{ env.IMAGE }}" \
+          ${TAG_ARGS} \
           "${{ inputs.path }}"
       shell: bash
